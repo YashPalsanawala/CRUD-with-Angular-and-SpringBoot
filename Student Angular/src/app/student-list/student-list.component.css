@@ -1,0 +1,14 @@
+td {
+    text-align: center;
+}
+table {
+    margin: 0 auto;
+}
+.h2-div {
+    margin-top: 5px;
+    text-align: center;
+}
+
+tr:nth-child(even) {
+    background-color: #f2f2f2;
+}

@@ -1,0 +1,40 @@
+
+<div class="main-div">
+    <div class="h2-div">
+      <h2>Student Details</h2>
+      <button (click)="newStudent()"> Add New Student </button>
+      <button (click)="logOut()"> Log out </button>
+    </div>
+    <div class="panel-body">
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th>Student Id</th>
+            <th>Firstname</th>
+            <th>Lastname</th>
+            <th>Age</th>
+            <th>Phone</th>
+            <th>Email</th>
+            <th>Owner</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let s of students | async">
+            <td> {{s.id}} </td>
+            <td> {{s.firstname}} </td>
+            <td> {{s.lastname}} </td>
+            <td> {{s.age}} </td>
+            <td> {{s.phone}} </td>
+            <td> {{s.email}} </td>
+            <td> {{s.owner}} </td>
+            <td>
+                <button>Edit</button>&nbsp;
+                <button (click)="deleteData(s.id)">Delete</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  

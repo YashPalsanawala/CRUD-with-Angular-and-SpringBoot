@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+<head>
+<title>Create New Student</title>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootswatch/4.5.2/cosmo/bootstrap.min.css" />
+
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+
+	<script type="text/javascript">
+	
+		function home(){
+			localStorage.clear();
+			window.location.href = "http://localhost:8080/Student/";
+			return false;
+		}
+		
+		function check(){
+			var users = localStorage.getItem("username");
+			var tokens = localStorage.getItem("token");
+			if(users == null || tokens == null){
+				alert("Unauthorized");
+				home();
+			}			
+		}
+		
+		check();
+		
+		var fn,ln,age,ph,mail,user;
+		
+		function validate() {
+
+			fn = document.getElementById("fname").value;
+			ln = document.getElementById("lname").value;
+			age = document.getElementById("age").value;
+			ph = document.getElementById("phone").value;
+			mail = document.getElementById("email").value;
+			
+			var namechk = "";
+			var exp = /^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/;
+
+			namechk = fn.trim();
+			if (namechk == "") {
+				alert("Please Enter Valid First Name");
+				document.getElementById("fname").focus();
+				return false;
+			}
+
+			if (!isNaN(namechk)) {
+				alert("Please Enter Only Characters in First Name");
+				document.getElementById("fname").focus();
+				return false;
+			}
+
+			namechk = ln.trim();
+			if (namechk == "") {
+				alert("Please Enter Valid Last Name");
+				document.getElementById("lname").focus();
+				return false;
+			}
+
+			if (!isNaN(namechk)) {
+				alert("Please Enter Only Characters in Last Name");
+				document.getElementById("lname").focus();
+				return false;
+			}
+
+			if (age < 10 || age > 50) {
+				alert("Please Enter Age between 10 to 50");
+				document.getElementById("age").focus();
+				return false;
+			}
+
+			if (ph < 6355111111 || ph > 9999999999) {
+				alert("Please Enter 10 Digit Contact Number.");
+				document.getElementById("phone").focus();
+				return false;
+			}
+			
+			if (exp.test(mail) == false) {
+				alert("Please Enter Valid Email ID.");
+				document.getElementById("email").focus();
+				return false;
+			}			
+		
+			return true;			
+		}
+		
+		
+		function insertRecord() {
+						
+			var status = validate();
+			//console.log("Status : ", status);
+			if(status) {
+				
+				user = localStorage.getItem("username");
+				
+				var data = JSON.stringify({
+					"firstname": fn,
+					"lastname" : ln,
+					"age" : age,
+					"phone" : ph,
+					"email" : mail,
+					"owner" : user
+				});
+				
+				var xhttp = new XMLHttpRequest();
+				xhttp.onreadystatechange = function () {
+					if (this.readyState == 4 && this.status == 200) {
+						//res = this.responseText;					
+						//alert("Inserted : ",res);
+						alert("Record Inserted Successfully");
+						window.location.href = "http://localhost:8080/Student/homePage.html";
+					}
+				};
+				xhttp.open("POST", "http://localhost:8181/api/student/create", true);
+				xhttp.setRequestHeader("Content-type", "application/json");
+				xhttp.send(data);
+			}
+		}
+			
+	</script>
+
+</head>
+
+<body>
+	<div align="center">
+		<h1>
+			<b>Student Details </b>
+		</h1>
+		<br />
+		<div class="col-sm-4">
+
+				<div>
+					<tr>
+						<label class="form-label">First Name</label>
+						<td>
+							<input type="text" id="fname" minlength="2" maxlenght="25" class="form-control"
+							pattern="[a-zA-Z][a-zA-Z ]{2,24}" title="Enter Valid First Name"
+							placeholder="First Name" required />
+						</td>
+					</tr>
+				</div>
+
+				<div>
+
+					<tr>
+						<label class="form-label">Last Name</label>				
+						<td>
+							<input type="text" id="lname" minlength="2" maxlenght="25" class="form-control"
+							pattern="[a-zA-Z][a-zA-Z ]{2,24}" title="Enter Valid Last Name"
+							placeholder="Last Name" required />
+						</td>
+					</tr>
+				</div>
+				<div>
+					<tr>
+						<label class="form-label">Age</label>
+						<td>
+							<input type="number" id="age" class="form-control" min=10 max=50 placeholder="Age" required />
+						</td>
+					</tr>
+				</div>
+
+				<div>
+					<tr>
+						<label class="form-label">Phone</label>
+						<td><input type="number" id="phone" class="form-control" min=6355111111 max=9999999999 placeholder="Phone" required /></td>
+					</tr>
+				</div>
+
+				<div>
+					<tr>
+						<label class="form-label">Email</label>
+						<td><input type="email" id="email" class="form-control" placeholder="Email" required /></td>
+					</tr>
+				</div>
+				<br>
+				<tr>
+					<td colspan="2">
+						<button onclick="insertRecord();" class="btn btn-info btn-submit" >Save</button>
+					</td>
+				</tr>
+				</table>
+		</div>
+</body>
+</html>

@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+
+<head >
+	<title>Login Page</title>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootswatch/4.5.2/cosmo/bootstrap.min.css" />
+	<!-- <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script> -->
+	
+	<script type="text/javascript">
+
+		localStorage.clear();
+		
+		function check() {
+		
+			var res;
+			var user = document.getElementById("username").value;
+			var pass = document.getElementById("pwd").value;
+			
+			var data = JSON.stringify({
+				username: user,
+				password: pass
+			});
+
+			var xhttp = new XMLHttpRequest();
+			xhttp.onreadystatechange = function () {
+				if (this.readyState == 4 && this.status == 200) {
+					res = this.responseText;
+					//console.log("Response : ",res);
+				
+					if(res === "Invalid User") {
+						alert("Invalid Username");
+						document.getElementById("username").focus();
+					}
+					else if(res === "Invalid PWD") {
+						alert("Invalid Password");
+						document.getElementById("pwd").focus();
+					}
+					else {
+						alert("Login Successfully");
+						localStorage.setItem("username",user);
+						localStorage.setItem("token",res);
+						//console.log("LocalStorage : ",localStorage);
+											
+						window.location.href = "http://localhost:8080/Student/homePage.html";
+					}					
+				}
+			};
+			xhttp.open("POST", "http://localhost:8181/api/login/", true);
+			xhttp.setRequestHeader("Content-type", "application/json");
+			xhttp.send(data);
+		}
+		
+	</script>
+</head>
+<body>
+	<div align="center">
+		<h1 style="margin-top:50px">
+			<b>Login </b>
+		</h1> 
+			<br/>		
+		<div class="col-sm-4">
+
+			<div>
+				<tr>
+					<label class="form-label">User Name</label>
+					<td>							<input type="text" id="username" class="form-control" pattern="[a-zA-Z][a-zA-Z]{2,24}"
+							title="Enter Valid User Name" placeholder="User Name" required />
+					</td>
+				</tr>
+			</div>
+			<div>
+				<tr>
+					<label class="form-label" style="margin-top:5px;">Password</label>
+					<td>
+						<input type="password" id="pwd" class="form-control" placeholder="Password" required />
+					</td>
+				</tr>
+			</div>
+
+			<br>
+			<tr>
+				<td colspan="2">
+					<button class="btn btn-info btn-submit" onclick="check()">Login</button>
+				</td>
+			</tr>
+		</div>
+</body>
+</html>

@@ -1,0 +1,175 @@
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<title>
+		Student Details
+	</title>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootswatch/4.5.2/cosmo/bootstrap.min.css" />
+
+<!--script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script-->
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+	<script type="text/javascript">
+		
+		var myJson = null;
+		
+		function popup(){		
+			window.location.href = "http://localhost:8080/Student/new.html";
+			return false;
+		}
+		
+		function home(){
+			localStorage.clear();
+			window.location.href = "http://localhost:8080/Student/";
+			return false;
+		}
+		
+		function check(){		
+			var users = localStorage.getItem("username");
+			var tokens = localStorage.getItem("token");
+	
+			if(users == null || tokens == null){
+				alert("Unauthorized");
+				home();
+			}
+			else {
+				//console.log(users, " -before data- " ,tokens);
+				var datas = JSON.stringify({
+						"username" : users,
+						"token" : tokens						
+					});						
+				var xhttp = new XMLHttpRequest();
+				xhttp.onload = function () {
+
+					if (this.readyState == 4 && this.status == 200) {
+						res = this.responseText;	
+						if(res === "Valid") {
+							//alert("You are Valid");
+						}
+						else {
+							alert("Invalid Token");
+							home();
+						}
+					}
+					else {
+						alert("Please try again");
+						home();
+					}
+				};
+				xhttp.open("POST", "http://localhost:8181/api/login/validate", true);
+				xhttp.setRequestHeader("Content-type", "application/json");
+				xhttp.send(datas);			
+			}
+		}
+				
+		const userAction = async () => {
+			check();
+
+			const response = await fetch('http://localhost:8181/api/student/');
+			myJson = await response.json();
+			return myJson;
+		};
+		
+		const dataPopulate = () => {
+			myJson.forEach((item, index) => {
+				
+				const display = "<tr><td>"+item.id+"</td><td>"+item.firstname+"</td><td>"+item.lastname+"</td><td>"+item.age+"</td><td>"+item.phone+"</td><td>"+item.email+"</td><td>"+item.owner+"</td><td><a href='edit.html?id="+item.id+"' > Edit</a></td><td><a onclick='deleteRecord("+item.id+")'>Delete</a></td></tr>";
+				
+				document.getElementById("student-table-data").innerHTML = document.getElementById("student-table-data").innerHTML + display;
+			})
+				
+		}
+		
+		userAction();
+		setTimeout(() => {
+			dataPopulate();
+		}, 1000);
+	
+		function deleteRecord(itemID) {
+			
+				var request = new XMLHttpRequest();
+				//console.log("ID: ",itemID);
+				request.open("POST","http://localhost:8181/api/student/delete/"+itemID);
+				request.send();
+				request.onreadystatechange = () => {
+					//console.log("Response Delete : ",request);
+					if(request.status === 200) {
+						alert("Record Deleted")				
+					}
+					else {
+						alert("Error in Record Deleted")				
+					}
+				}
+				
+				//setTimeout(500);
+				window.location.href = "http://localhost:8080/Student/homePage.html";
+				return false;
+			}
+			
+	</script>
+
+	<style type="text/css">
+		a {
+		  color: black;
+		  text-decoration: none;
+		}
+		a:hover {
+		 color: black;
+		 cursor : Pointer;
+		}
+	</style>
+
+</head>
+
+<body>
+<center>
+	<div>
+		<h2>
+			<b>Student Details </b>
+		</h2>
+		<tr>
+			<div>
+				<button id="btn-new" onclick="popup()"> Add New Student </button>
+				<button id="btn-logout" onclick="home()"> Log out </button>
+			</div>
+			<br>
+		</tr>
+		<tr>
+
+			<div class="col-sm-9" align="center">
+				<div class="panel-body" align="center">
+					<table style="text-align:center;" class="table table-striped">
+						<thead class="thead-dark">
+							<tr>
+								<th>Student ID</th>
+								<th>First Name</th>
+								<th>Last Name</th>
+								<th>Age</th>
+								<th>Phone</th>
+								<th>Email ID</th>
+								<th>Owner</th>
+								<th>Edit</th>
+								<th>Delete</th>
+							</tr>
+						</thead>
+						<tbody id="student-table-data">
+
+						</tbody>
+					</table>
+
+				</div>
+
+			</div>
+
+		</tr>
+
+		</tbody>
+		</table>
+		<div>
+		</center>
+</body>
+</html>
