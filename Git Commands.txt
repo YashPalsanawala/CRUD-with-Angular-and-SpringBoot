@@ -1,0 +1,43 @@
+
+For Set Name
+	git config --global user.name "Yash"
+	git config --global user.email "Yash.palsanawala@pedagogy.study"
+
+For creating empty file
+	touch "filename"
+	
+First Initialize the git
+	git init
+	
+Add new file
+	git add "filename"
+Add all new files
+	git add -A or git add .
+	
+To check status
+	git status
+	
+Save File
+	git commit (It opens VI Editor and hard process)
+	git commit -m "messaeg"
+
+Modify current fileContent with last backup Content
+	git checkout "filename"
+For All File
+	git checkout -fg
+	
+for display commit all logs
+	git log
+for display commit no of logs
+	git log -p -1
+	
+for check what we update/delete in file (Try before commit)
+	git diff
+	
+For select Repository
+	git remote add origin 'path of repository'
+example:
+	git remote add origin 'https://github.com/YashPalsanawala/Angular-and-SpringBoot.git'
+	
+For upload files
+	 git push -u origin master
